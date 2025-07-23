@@ -957,6 +957,16 @@ class CustomStreamWrapper:
                         raise StopIteration
                 anthropic_response_obj: GChunk = cast(GChunk, chunk)
                 completion_obj["content"] = anthropic_response_obj["text"]
+                if (
+                    "provider_specific_fields" in anthropic_response_obj
+                    and anthropic_response_obj["provider_specific_fields"] is not None
+                    and "reasoning_content"
+                    in anthropic_response_obj["provider_specific_fields"]
+                ):
+                    completion_obj["reasoning_content"] = anthropic_response_obj[
+                        "provider_specific_fields"
+                    ]["reasoning_content"]
+                
                 if anthropic_response_obj["is_finished"]:
                     self.received_finish_reason = anthropic_response_obj[
                         "finish_reason"
